@@ -44,10 +44,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $openid = null;
 
     #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $lvl = null;
+    private ?int $lvl = 0;
 
     #[ORM\Column]
-    private ?int $point = null;
+    private ?int $point = 0;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createAt = null;
 
     public function __construct()
     {
@@ -210,6 +213,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setPoint(int $point): static
     {
         $this->point = $point;
+
+        return $this;
+    }
+
+    public function getCreateAt(): ?\DateTimeImmutable
+    {
+        return $this->createAt;
+    }
+
+    public function setCreateAt(\DateTimeImmutable $createAt): static
+    {
+        $this->createAt = $createAt;
 
         return $this;
     }
