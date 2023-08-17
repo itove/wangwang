@@ -25,6 +25,11 @@ class Node
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $image = null;
+    
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): ?int
     {

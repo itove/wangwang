@@ -38,6 +38,7 @@ class Ord
     public function __construct()
     {
         $this->ordItems = new ArrayCollection();
+        $this->createdAt = new \DateTimeImmutable();
     }
 
     public function getId(): ?int
