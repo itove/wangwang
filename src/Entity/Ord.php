@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\OrdRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -29,6 +31,14 @@ class Ord
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $note = null;
+
+    #[ORM\OneToMany(mappedBy: 'ord', targetEntity: OrdItems::class)]
+    private Collection $ordItems;
+
+    public function __construct()
+    {
+        $this->ordItems = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -91,6 +101,36 @@ class Ord
     public function setNote(?string $note): static
     {
         $this->note = $note;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrdItems>
+     */
+    public function getOrdItems(): Collection
+    {
+        return $this->ordItems;
+    }
+
+    public function addOrdItem(OrdItems $ordItem): static
+    {
+        if (!$this->ordItems->contains($ordItem)) {
+            $this->ordItems->add($ordItem);
+            $ordItem->setOrd($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrdItem(OrdItems $ordItem): static
+    {
+        if ($this->ordItems->removeElement($ordItem)) {
+            // set the owning side to null (unless already changed)
+            if ($ordItem->getOrd() === $this) {
+                $ordItem->setOrd(null);
+            }
+        }
 
         return $this;
     }
