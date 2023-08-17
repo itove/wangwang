@@ -33,6 +33,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'consumer', targetEntity: Ord::class, orphanRemoval: true)]
     private Collection $ords;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $addr = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $phone = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $openid = null;
+
     public function __construct()
     {
         $this->ords = new ArrayCollection();
@@ -134,6 +143,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $ord->setConsumer(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAddr(): ?string
+    {
+        return $this->addr;
+    }
+
+    public function setAddr(?string $addr): static
+    {
+        $this->addr = $addr;
+
+        return $this;
+    }
+
+    public function getPhone(): ?string
+    {
+        return $this->phone;
+    }
+
+    public function setPhone(?string $phone): static
+    {
+        $this->phone = $phone;
+
+        return $this;
+    }
+
+    public function getOpenid(): ?string
+    {
+        return $this->openid;
+    }
+
+    public function setOpenid(?string $openid): static
+    {
+        $this->openid = $openid;
 
         return $this;
     }
