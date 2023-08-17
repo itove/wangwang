@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -27,6 +29,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\Column]
     private ?string $password = null;
+
+    #[ORM\OneToMany(mappedBy: 'consumer', targetEntity: Ord::class, orphanRemoval: true)]
+    private Collection $ords;
+
+    public function __construct()
+    {
+        $this->ords = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -96,5 +106,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    /**
+     * @return Collection<int, Ord>
+     */
+    public function getOrds(): Collection
+    {
+        return $this->ords;
+    }
+
+    public function addOrd(Ord $ord): static
+    {
+        if (!$this->ords->contains($ord)) {
+            $this->ords->add($ord);
+            $ord->setConsumer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrd(Ord $ord): static
+    {
+        if ($this->ords->removeElement($ord)) {
+            // set the owning side to null (unless already changed)
+            if ($ord->getConsumer() === $this) {
+                $ord->setConsumer(null);
+            }
+        }
+
+        return $this;
     }
 }
